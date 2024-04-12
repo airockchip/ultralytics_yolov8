@@ -314,9 +314,11 @@ class Exporter:
 
         f = str(self.file).replace(self.file.suffix, f'.onnx')
         opset_version = self.args.opset or get_latest_opset()
+        dummy_input = torch.zeros(1, 3, 384, 640)
+
         torch.onnx.export(
             self.model,
-            self.im[0:1,:,:,:],
+            dummy_input,
             f,
             verbose=False,
             opset_version=12,
