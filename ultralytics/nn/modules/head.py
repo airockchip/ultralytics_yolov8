@@ -171,7 +171,6 @@ class Pose(Detect):
             first = bboxes_combined[0]
             second = bboxes_combined[1]
             third = bboxes_combined[2]
-            breakpoint()
 
             return first, second, third  # Return the raw outputs for RKNN conversion
         pred_kpt = self.kpts_decode(bs, kpt)
