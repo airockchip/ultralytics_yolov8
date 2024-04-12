@@ -155,10 +155,6 @@ class Pose(Detect):
         if self.training:
             return x, kpt
         if self.export and self.format == 'rknn':
-            for bbox in x:
-                print('bbox ', bbox.shape)
-            for k in kpt:
-                print('kkkk ', k.shape)
 
             bbox = x
 
