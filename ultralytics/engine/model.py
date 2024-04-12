@@ -322,7 +322,7 @@ class Model:
             device=overrides['device'],
             verbose=kwargs.get('verbose'))
 
-    def export(self, **kwargs):
+    def export(self,input_height=640,input_width=640, **kwargs):
         """
         Export model.
 
@@ -341,7 +341,7 @@ class Model:
             overrides['data'] = None  # default to None if not modified (avoid int8 calibration with coco.yaml)
         args = get_cfg(cfg=DEFAULT_CFG, overrides=overrides)
         args.task = self.task
-        return Exporter(overrides=args, _callbacks=self.callbacks)(model=self.model)
+        return Exporter(input_height,input_width,overrides=args, _callbacks=self.callbacks)(model=self.model)
 
     def train(self, trainer=None, **kwargs):
         """
