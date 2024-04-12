@@ -89,10 +89,10 @@ def export_formats():
         ['TensorFlow Lite', 'tflite', '.tflite', True, False],
         ['TensorFlow Edge TPU', 'edgetpu', '_edgetpu.tflite', True, False],
         ['TensorFlow.js', 'tfjs', '_web_model', True, False],
-        ['PaddlePaddle', 'paddle', '_paddle_model', True, True], 
+        ['PaddlePaddle', 'paddle', '_paddle_model', True, True],
         ['ncnn', 'ncnn', '_ncnn_model', True, True],
         ['RKNN', 'rknn', '_rknnopt.torchscript', True, False],
-        ]
+    ]
     return pandas.DataFrame(x, columns=['Format', 'Argument', 'Suffix', 'CPU', 'GPU'])
 
 
@@ -133,7 +133,7 @@ class Exporter:
         save_dir (Path): Directory to save results.
     """
 
-    def __init__(self, cfg=DEFAULT_CFG, overrides=None, _callbacks=None):
+    def __init__(self, input_height=640, input_width=640, cfg=DEFAULT_CFG, overrides=None, _callbacks=None):
         """
         Initializes the Exporter class.
 
@@ -145,6 +145,8 @@ class Exporter:
         self.args = get_cfg(cfg, overrides)
         self.callbacks = _callbacks or callbacks.get_default_callbacks()
         callbacks.add_integration_callbacks(self)
+        self.input_height = input_height
+        self.input_width = input_width
 
     @smart_inference_mode()
     def __call__(self, model=None):
@@ -161,7 +163,6 @@ class Exporter:
         if sum(flags) != 1:
             raise ValueError(f"Invalid export format='{format}'. Valid formats are {fmts}")
         jit, onnx, xml, engine, coreml, saved_model, pb, tflite, edgetpu, tfjs, paddle, ncnn, rknn = flags  # export booleans
-
 
         # Load PyTorch model
         self.device = select_device('cpu' if self.args.device is None else self.args.device)
@@ -313,22 +314,19 @@ class Exporter:
         # torch.jit.save(ts, str(f))
 
         f = str(self.file).replace(self.file.suffix, f'.onnx')
-        opset_version = self.args.opset or get_latest_opset()
-        dummy_input = torch.zeros(1, 3, 384, 640)
-
+        dummy_input = torch.zeros(1, 3, self.input_height, self.input_width)
         torch.onnx.export(
             self.model,
             dummy_input,
             f,
             verbose=False,
-            opset_version=12,
+            opset_version=19,
             do_constant_folding=True,  # WARNING: DNN inference with torch>=1.12 may require do_constant_folding=False
             input_names=['images'])
 
-        LOGGER.info(f'\n{prefix} feed {f} to RKNN-Toolkit or RKNN-Toolkit2 to generate RKNN model.\n' 
+        LOGGER.info(f'\n{prefix} feed {f} to RKNN-Toolkit or RKNN-Toolkit2 to generate RKNN model.\n'
                     'Refer https://github.com/airockchip/rknn_model_zoo/tree/main/models/CV/object_detection/yolo')
         return f, None
-
 
     @try_export
     def export_onnx(self, prefix=colorstr('ONNX:')):
