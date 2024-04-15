@@ -36,7 +36,7 @@ class DetectionTrainer(BaseTrainer):
         shuffle = mode == 'train'
         if getattr(dataset, 'rect', False) and shuffle:
             LOGGER.warning("WARNING ⚠️ 'rect=True' is incompatible with DataLoader shuffle, setting shuffle=False")
-            shuffle = False
+            shuffle = True
         workers = self.args.workers if mode == 'train' else self.args.workers * 2
         return build_dataloader(dataset, batch_size, workers, shuffle, rank)  # return dataloader
 
