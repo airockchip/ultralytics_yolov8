@@ -36,7 +36,7 @@ def autopad(k, p=None, d=1):  # kernel, padding, dilation
 class Conv(nn.Module):
     """Standard convolution with args(ch_in, ch_out, kernel, stride, padding, groups, dilation, activation)."""
 
-    default_act = nn.SiLU()  # default activation
+    default_act = nn.ReLU() # nn.SiLU()  # default activation
 
     def __init__(self, c1, c2, k=1, s=1, p=None, g=1, d=1, act=True):
         """Initialize Conv layer with given arguments including activation."""
@@ -117,7 +117,7 @@ class DWConvTranspose2d(nn.ConvTranspose2d):
 class ConvTranspose(nn.Module):
     """Convolution transpose 2d layer."""
 
-    default_act = nn.SiLU()  # default activation
+    default_act = nn.ReLU() # nn.SiLU()  # default activation
 
     def __init__(self, c1, c2, k=2, s=2, p=0, bn=True, act=True):
         """Initialize ConvTranspose2d layer with batch normalization and activation function."""
@@ -178,7 +178,7 @@ class RepConv(nn.Module):
     Based on https://github.com/DingXiaoH/RepVGG/blob/main/repvgg.py
     """
 
-    default_act = nn.SiLU()  # default activation
+    default_act = nn.ReLU() #nn.SiLU()  # default activation
 
     def __init__(self, c1, c2, k=3, s=1, p=1, g=1, d=1, act=True, bn=False, deploy=False):
         """Initializes Light Convolution layer with inputs, outputs & optional activation function."""

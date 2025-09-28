@@ -1,0 +1,8 @@
+path: G:/prj/AI/ai-tracker/datasets/fly  # dataset root dir
+train: images/train
+val: images/val
+
+# Classes
+names:
+  0: uav
+nc: 1
