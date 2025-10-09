@@ -170,3 +170,5 @@ pnnx*
 
 # calibration image
 calibration_*.npy
+/fly_model
+/fly_model50
